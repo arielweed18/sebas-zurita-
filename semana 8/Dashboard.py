@@ -1,24 +1,27 @@
 import threading
 import time
 
-def tarea_hilo(identificador, delay):
-    for i in range(5):
-        print(f'Hilo {identificador}: Realizando tarea {i}')
-        time.sleep(delay)
+evento = threading.Event()
 
-hilo1 = threading.Thread(target=tarea_hilo, args=(1, 1))
-hilo2 = threading.Thread(target=tarea_hilo, args=(2, 0.8))
-hilo3 = threading.Thread(target=tarea_hilo, args=(3, 1.2))
+def esperar_evento():
+    print("Esperando al evento...")
+    evento.wait()
+    print("El evento ha sido activado!")
+
+def activar_evento():
+    print("Esperando 5 segundos antes de activar el evento...")
+    time.sleep(5)
+    evento.set()
+    print("El evento ha sido activado después de 5 segundos")
+
+hilo1 = threading.Thread(target=esperar_evento)
+hilo2 = threading.Thread(target=activar_evento)
 
 hilo1.start()
 hilo2.start()
-hilo3.start()
-
 hilo1.join()
 hilo2.join()
-hilo3.join()
 
-print('Programa principal: Todas las tareas han sido completadas.')
+print("Programa terminado")
 
-# Mantener la ventana activa 10 segundos
-time.sleep(10)
+
